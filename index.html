@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Customized T-Shirts</title>
+    <style>
+        #receipt {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script>
+        function generateUniqueReceiptNumber() {
+            return 'R' + new Date().getTime(); // Generate a unique number based on the current timestamp
+        }
+
+        function validateForm(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Get form elements
+            const tagline = document.getElementById('tagline').value;
+            const quantity = document.getElementById('quantity').value;
+            const phone = document.getElementById('phone').value;
+            const comments = document.getElementById('comments').value;
+            const deliveryDateInput = document.getElementById('deliveryDate').value;
+
+         // Convert delivery date from input (YYYY-MM-DD) to Date object
+            const deliveryDate = new Date(deliveryDateInput);
+
+            // Validate tagline length
+            if (tagline.length > 20) {
+                alert('Tagline cannot exceed 20 characters.');
+                return false;
+            }
+
+            // Validate quantity is a positive number
+            if (quantity <= 0 || quantity > 15) {
+                alert('Quantity must be a positive number and cannot exceed 15.');
+                return false;
+            }
+
+            // Validate phone number
+            const phonePattern = /^[7-9][0-9]{9}$/;
+            if (!phonePattern.test(phone)) {
+                alert('Phone number must be exactly 10 digits starting with 7, 8, or 9.');
+                return false;
+            }
+
+            // Validate comments length
+            if (comments.length > 50) {
+                alert('Comments cannot exceed 50 characters.');
+                return false;
+            }
+            const today = new Date();
+             today.setDate(today.getDate() + 2); 
+
+           if (deliveryDate < today) {
+              alert('Delivery date must be at least 2 days from today.');
+               return false;
+              }
+
+
+            // Form is valid, proceed to generate receipt
+            generateReceipt();
+        }
+
+        function generateReceipt() {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            let receiptText = '<h2>Order Confirmation Receipt</h2>';
+
+            // Generate a unique receipt number
+            const receiptNumber = generateUniqueReceiptNumber();
+            receiptText += `<p><strong>Receipt Number:</strong> ${receiptNumber}</p>`;
+
+            formData.forEach((value, key) => {
+                receiptText += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}</p>`;
+            });
+
+           
+            const receiptDate = new Date();
+            receiptText += `<p><strong>Date of Receipt:</strong> ${receiptDate.toLocaleDateString()} ${receiptDate.toLocaleTimeString()}</p>`;
+
+          
+            document.getElementById('receipt').innerHTML = receiptText;
+            document.getElementById('receipt').style.display = 'block';
+
+        }
+    </script>
+</head>
+<body>
+    <h1>Order Customized T-Shirts</h1>
+    <form onsubmit="validateForm(event)">
+        <fieldset>
+            <legend>Shirt Customization</legend>
+            
+            <label for="tagline">Tagline:</label>
+            <input type="text" id="tagline" name="tagline" placeholder="Enter your tagline" required><br><br>
+            
+            <label for="favcolor">Select your favorite color:</label>
+            <input type="color" id="favcolor" name="favcolor" value="#ff0000"><br><br>
+            
+            <label for="size">Size:</label>
+            <select id="size" name="size" required>
+                <option value="">Select a size</option>
+                <option value="small">S</option>
+                <option value="medium">M</option>
+                <option value="large">L</option>
+                <option value="xl">XL</option>
+                <option value="xxl">XXL</option>
+            </select><br><br>
+            
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="15" placeholder="Qty" required><br><br>
+            
+            <label for="deliveryDate">Delivery Date:</label>
+            <input type="date" id="deliveryDate" name="deliveryDate" required>
+        </fieldset><br><br>
+
+        <fieldset>
+            <legend>Delivery Details</legend>
+            
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Recipient's name" required><br><br>
+            
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" placeholder="Delivery address" required><br><br>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Recipient's email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required><br><br>
+            
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Phone number" pattern="[7-9]{1}[0-9]{9}"  maxlength="10" minlength="10" required>
+        </fieldset>
+        
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" rows="4" placeholder="Additional comments"></textarea><br><br>
+        
+        <button type="submit">Submit Order</button>
+        <button type="reset">Reset Form</button>
+    </form>
+
+    <!-- Receipt display area -->
+    <div id="receipt"></div>
+</body>
+</html>
