@@ -28,6 +28,7 @@
             const quantity = document.getElementById('quantity').value;
             const phone = document.getElementById('phone').value;
             const comments = document.getElementById('comments').value;
+             const email = document.getElementById('email').value;
             const deliveryDateInput = document.getElementById('deliveryDate').value;
 
          // Convert delivery date from input (YYYY-MM-DD) to Date object
@@ -49,6 +50,11 @@
             const phonePattern = /^[7-9][0-9]{9}$/;
             if (!phonePattern.test(phone)) {
                 alert('Phone number must be exactly 10 digits starting with 7, 8, or 9.');
+                return false;
+            }
+               const emailPattern = /\S+@\S+\.\S+/;
+            if (!emailPattern.test(email)) {
+                alert('Please enter a valid email address.');
                 return false;
             }
 
